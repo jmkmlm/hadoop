@@ -1,4 +1,4 @@
-package cache;
+package cache_hdfs;
 
 
 import java.net.URI;
@@ -16,53 +16,55 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
 
-import partitioner.wordCountReduce;
-
-public class cacheDriver extends Configured implements Tool{
-	private static final Logger LOG=Logger.getLogger(cacheDriver.class);
+public class CacheDriver extends Configured implements Tool {
+	private static final Logger LOG = Logger.getLogger(CacheDriver.class);
 
 	@Override
 	public int run(String[] args) throws Exception {
-		String[] otherArgs= new GenericOptionsParser(getConf(),args).getRemainingArgs();
-		if(otherArgs.length<3) {
-			System.out.println("-----参数不对----------");
+		String[] otherArgs = new GenericOptionsParser(getConf(), args)
+				.getRemainingArgs();
+		if (otherArgs.length < 3) {
+			LOG.info("----------鍙傛暟涓嶅-----------------");
 		}
-		String intputPath=otherArgs[0];
-		String outputPath=otherArgs[1];
-		String dicPath=otherArgs[2];
-		LOG.info("----inputPath------"+intputPath);
+
+		String intputPath = otherArgs[0];
+		String outputPath = otherArgs[1];
+		String dicPath = otherArgs[2];
+		LOG.info("-----inputPath-------" + intputPath);
 		LOG.info("-----outputPath-------" + outputPath);
 		LOG.info("-----dicPath---------" + dicPath);
+
 		Job job = Job.getInstance();
-		job.setJarByClass(cacheDriver.class);
-		job.setJar("D:\\hadoop\\workspace\\cache.jar");
-		job.setJobName("combiner");
-		
+		job.setJarByClass(CacheDriver.class);
+
+		//job.setJar("D:\\hadoop\\workspace\\cache.jar");
+		job.setJobName("cacheDemo");
 		job.setMapperClass(cacheMapper.class);
-		job.setReducerClass(cacheReduece.class);
+		job.setReducerClass(cacheReducer.class);
 		job.setMapOutputKeyClass(Text.class);
 		job.setMapOutputValueClass(IntWritable.class);
-		
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(IntWritable.class);
-	
-	
+
 		Path path = new Path(dicPath);
-		// # 号之后的名称是对上面文件的链接，不同文件的链接名不能相同，名称自定义
-		String cacheLinkPath = path.toUri().toString() + "#" + "userdic";
-		DistributedCache.addCacheFile(new URI(cacheLinkPath),job.getConfiguration());
-		
+		// # 鍙蜂箣鍚庣殑鍚嶇О鏄涓婇潰鏂囦欢鐨勯摼鎺ワ紝涓嶅悓鏂囦欢鐨勯摼鎺ュ悕涓嶈兘鐩稿悓锛屽悕绉拌嚜瀹氫箟
+		String cacheLinkPath = path.toUri().toString()+"#" + "userdic";
+		System.out.println(cacheLinkPath);
+		DistributedCache.addCacheFile(new URI(cacheLinkPath),
+				job.getConfiguration());
+
 		FileInputFormat.addInputPath(job, new Path(intputPath));
 		FileOutputFormat.setOutputPath(job, new Path(outputPath));
 
 		return job.waitForCompletion(true) ? 0 : 1;
 	}
+
 	public static void main(String[] args) throws Exception {
-		System.setProperty("HADOOP_USER_NAME", "root");
-		int status = ToolRunner.run(new cacheDriver(), args);
+		//System.setProperty("HADOOP_USER_NAME", "root");
+		int status = ToolRunner.run(new CacheDriver(), args);
 		LOG.info("-----------over----------------");
 		System.exit(status);
+
 	}
 
-	
 }

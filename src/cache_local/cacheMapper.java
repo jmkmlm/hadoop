@@ -1,4 +1,4 @@
-package cache;
+package cache_local;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -15,40 +15,40 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.log4j.Logger;
 
 public class cacheMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
-	private static final Logger LOG=Logger.getLogger(cacheMapper.class);
-	private Map<String, String> dicMap=null;//×Öµä±í
+	private static final Logger LOG = Logger.getLogger(cacheMapper.class);
+	private Map<String, String> dicMap=null;
 	@Override
 	protected void setup(Mapper<LongWritable, Text, Text, IntWritable>.Context context)
-			throws IOException, InterruptedException {//mapÈÎÎñ³õÊ¼»¯µ÷ÓÃ
+			throws IOException, InterruptedException {
+		BufferedReader buffer = null;
 
-		BufferedReader br = null;
 		try {
-			br = new BufferedReader(new InputStreamReader(new FileInputStream("userdic")));
-			if(br!=null) {
-				dicMap = new HashMap<String,String>();
-				while (br.ready()) {
-					String line = br.readLine();
+			buffer = new BufferedReader(new InputStreamReader(
+					new FileInputStream("D:/hadoop/userdic")));
+			if (buffer != null) {
+				dicMap = new HashMap<String, String>();
+				while (buffer.ready()) {
+					String line = buffer.readLine();
 					if (StringUtils.isNotBlank(line)) {
 						String[] lines = line.split(",", -1);
-						if (lines != null && lines.length != 0) {
-							dicMap.put(lines[0], lines[1] + "," + lines[2]);//ÇĞ¸î×Ö¶Î
+						if (lines != null && lines.length >= 0) {
+							dicMap.put(lines[0], lines[1] + "," + lines[2]);
 						}
 					}
 				}
 			}
+
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			LOG.error(e);
-		}finally {
+		} finally {
 			try {
-				if(br!=null) {
-					br.close();
-				}
+				if (buffer != null)
+					buffer.close();
 			} catch (Exception e) {
 				LOG.error(e);
 			}
 		}
-
+	
 	}
 	@Override
 	protected void map(LongWritable key, Text value, Mapper<LongWritable, Text, Text, IntWritable>.Context context)
@@ -56,21 +56,20 @@ public class cacheMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
 		String line = value.toString();
 		if (StringUtils.isNotBlank(line)) {
 			String[] lines = line.split(",", -1);
-			if (lines != null && lines.length != 0) {
+			if (lines != null && lines.length >= 4) {
 				String userCode = lines[0];
 				if (dicMap != null && dicMap.size() != 0) {
-					String userMessage = dicMap.get(userCode);// Í¨¹ı×Öµä±í¹ØÁªÓÃ»§ĞÅÏ¢
+					String userMessage = dicMap.get(userCode);// é€šè¿‡å­—å…¸è¡¨å…³è”ç”¨æˆ·ä¿¡ï¿½?
 					if (StringUtils.isNotBlank(userMessage))
 						context.write(new Text(userMessage), new IntWritable(1));
 				}
 			}
 		}
-
 	}
 
 	@Override
 	protected void cleanup(Mapper<LongWritable, Text, Text, IntWritable>.Context context)
-			throws IOException, InterruptedException {//mapÈÎÎñ½áÊøµ÷ÓÃ
+			throws IOException, InterruptedException {
 		super.cleanup(context);
 	}
 }

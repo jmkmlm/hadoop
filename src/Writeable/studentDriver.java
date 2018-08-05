@@ -1,4 +1,4 @@
-package student;
+package Writeable;
 
 import java.io.IOException;
 
@@ -19,7 +19,7 @@ public class studentDriver {
 		Job job = Job.getInstance();
 		job.setJarByClass(studentDriver.class);
 		
-		job.setJobName("ÎÒÊÇÉµ±ÆÉÙµã¾Å¼¬öÔ");
+		job.setJobName("ï¿½ï¿½ï¿½ï¿½Éµï¿½ï¿½ï¿½Ùµï¿½Å¼ï¿½ï¿½ï¿½");
 		job.setMapperClass(studentMapper.class);
 		job.setReducerClass(studentReducer.class);
 		

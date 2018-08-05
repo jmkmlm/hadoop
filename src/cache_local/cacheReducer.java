@@ -1,4 +1,4 @@
-package cache;
+package cache_local;
 
 import java.io.IOException;
 
@@ -6,7 +6,7 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
-public class cacheReduece extends Reducer<Text, IntWritable,Text, IntWritable> {
+public class cacheReducer extends Reducer<Text, IntWritable,Text, IntWritable> {
 
 	@Override
 	protected void reduce(Text key, Iterable<IntWritable> values,

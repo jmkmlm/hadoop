@@ -1,4 +1,4 @@
-package student;
+package Writeable;
 
 import java.io.IOException;
 
@@ -9,7 +9,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
 /**
- * @description 分割字符
+ * @description 锟街革拷锟街凤拷
  * @author HYT
  *
  */
@@ -25,7 +25,7 @@ public class studentMapper extends Mapper<LongWritable, Text, studentWritable, I
 				String name = lines[0];
 				String gender=lines[1];
 				String number = lines[2];
-				//封装自定义的writeable数据类型
+			
 				studentWritable tmpKey = new studentWritable(new Text(name),new Text(gender));
 				IntWritable tmpValue = new IntWritable(Integer.parseInt(number));
 				context.write(tmpKey, tmpValue);

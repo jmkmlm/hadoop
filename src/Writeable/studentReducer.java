@@ -1,4 +1,4 @@
-package student;
+package Writeable;
 
 import java.io.IOException;
 
@@ -6,7 +6,7 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 /**
- * @description ÇóºÍ
+ * @description ï¿½ï¿½ï¿½
  * @author HYT
  *
  */
