@@ -9,3 +9,4 @@ day6_homeword：实现姓名，年龄，二级排序，并分区输出性别
 combiner：reduce之前的规约操作，放大数据多少倍，参看效果  
 cache：分布式缓冲，将hdfs上的个人信息，缓冲到各节点与之关联  
 multiple：按照name多目录输出；按照name及文本格式多目录输出  
+。。。。未待
